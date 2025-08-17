@@ -28,7 +28,7 @@ npm install @seimoney/sdk
 import { createSeiMoneySDK } from "@seimoney/sdk";
 
 const sdk = createSeiMoneySDK({
-  apiUrl: "https://api.seimoney.link",
+  apiUrl: import.meta.env.VITE_API_URL,
   token: "your-auth-token", // Optional
 });
 ```
@@ -40,7 +40,7 @@ import { createSeiMoneySDK } from "@seimoney/sdk";
 import { createWalletClient } from "viem";
 
 const sdk = createSeiMoneySDK({
-  apiUrl: "https://api.seimoney.link",
+  apiUrl: import.meta.env.VITE_API_URL,
 });
 
 // Connect your wallet

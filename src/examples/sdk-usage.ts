@@ -6,7 +6,7 @@ import type { WalletClient } from "viem";
 async function exampleUsage() {
   // Initialize the SDK
   const sdk = createSeiMoneySDK({
-    apiUrl: "https://api.seimoney.link",
+    apiUrl: import.meta.env.VITE_API_URL,
     token: "your-auth-token", // Optional: can be set later
   });
 
@@ -104,7 +104,7 @@ async function exampleUsage() {
 // Example with wallet integration
 async function exampleWithWallet(walletClient: WalletClient) {
   const sdk = createSeiMoneySDK({
-    apiUrl: "https://api.seimoney.link",
+    apiUrl: import.meta.env.VITE_API_URL,
   });
 
   // Update wallet client for payment processing

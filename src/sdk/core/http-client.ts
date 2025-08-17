@@ -27,6 +27,11 @@ export class HttpClient {
 
     if (this.token) {
       this.setToken(this.token);
+    } else if (localStorage) {
+      const savedToken = localStorage.getItem("token");
+      if (savedToken) {
+        this.setToken(savedToken);
+      }
     }
   }
 
@@ -77,6 +82,9 @@ export class HttpClient {
       "Authorization"
     ] = `Bearer ${token}`;
     this.client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    if (localStorage) {
+      localStorage.setItem("token", token);
+    }
   }
 
   updateWalletClient(walletClient: WalletClient | null): void {

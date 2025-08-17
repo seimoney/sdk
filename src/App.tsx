@@ -95,7 +95,7 @@ const paymentLink = await sdk.paymentLinks.createPaymentLink({
             </div>
             <div className="flex items-center space-x-4">
               <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                v1.0.0
+                v1.2.0
               </span>
             </div>
           </div>

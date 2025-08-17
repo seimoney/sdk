@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import type { Network } from "sei-x402/types";
+import type { Network } from "@seimoney/sei-x402/types";
 
 export type Token = {
   name: string;
@@ -280,5 +280,5 @@ export type SDKConfig = {
 export type SDKError = {
   code: string;
   message: string;
-  details?: any;
+  details?: string;
 };
