@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import type { Network } from "../../../../sei-x402/typescript/packages/x402/src/types";
+import type { Network } from "sei-x402/types";
 
 export type Token = {
   name: string;
