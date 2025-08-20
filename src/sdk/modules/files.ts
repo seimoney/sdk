@@ -1,10 +1,11 @@
+import { WalletClient } from "viem";
 import type { HttpClient } from "../core/http-client";
-import type { 
-  GatedFile, 
-  UploadFile, 
-  DeleteFile, 
-  FulFillFile, 
-  DownloadFile 
+import type {
+  GatedFile,
+  UploadFile,
+  DeleteFile,
+  FulFillFile,
+  DownloadFile,
 } from "../types";
 
 export class FilesModule {
@@ -31,7 +32,11 @@ export class FilesModule {
     const formData = new FormData();
 
     Object.entries(params).forEach(([key, value]) => {
-      formData.set(key, JSON.stringify(value));
+      if (value)
+        formData.set(
+          key,
+          typeof value === "object" ? JSON.stringify(value) : value?.toString()
+        );
     });
 
     formData.set("file", file);
@@ -47,7 +52,10 @@ export class FilesModule {
    * Download a file (get download URL)
    */
   async downloadFile(params: DownloadFile): Promise<{ url: string }> {
-    return await this.httpClient.post<{ url: string }>("/files/download", params);
+    return await this.httpClient.post<{ url: string }>(
+      "/files/download",
+      params
+    );
   }
 
   /**
@@ -60,7 +68,14 @@ export class FilesModule {
   /**
    * Fulfill a file purchase transaction
    */
-  async fulfillFile(params: FulFillFile): Promise<{ url: string; transaction: string }> {
-    return await this.httpClient.get<{ url: string; transaction: string }>(`/files/fulfill/${params.fileId}`);
+  async fulfillFile(
+    params: FulFillFile,
+    walletClient?: WalletClient
+  ): Promise<{ url: string; transaction: string }> {
+    return await this.httpClient.get<{ url: string; transaction: string }>(
+      `/files/fulfill/${params.fileId}`,
+      undefined,
+      walletClient
+    );
   }
 }

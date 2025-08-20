@@ -1,10 +1,5 @@
 import type { HttpClient } from "../core/http-client";
-import type { 
-  Product, 
-  CreateProduct, 
-  ImageFile, 
-  Checkout 
-} from "../types";
+import type { Product, CreateProduct, ImageFile, Checkout } from "../types";
 
 export class ProductsModule {
   constructor(private httpClient: HttpClient) {}
@@ -27,17 +22,26 @@ export class ProductsModule {
    * Get a specific product by ID
    */
   async getProduct(productId: string): Promise<Product> {
-    return await this.httpClient.get<Product>(`/checkout/products/${productId}`);
+    return await this.httpClient.get<Product>(
+      `/checkout/products/${productId}`
+    );
   }
 
   /**
    * Create a new product with images
    */
-  async createProduct(params: CreateProduct, files: ImageFile[]): Promise<Product | null> {
+  async createProduct(
+    params: CreateProduct,
+    files: ImageFile[]
+  ): Promise<Product | null> {
     const formData = new FormData();
 
     Object.entries(params).forEach(([key, value]) => {
-      formData.set(key, JSON.stringify(value));
+      if (value)
+        formData.set(
+          key,
+          typeof value === "object" ? JSON.stringify(value) : value?.toString()
+        );
     });
 
     files.forEach((file, index) => {
@@ -47,10 +51,14 @@ export class ProductsModule {
       }
     });
 
-    return await this.httpClient.post<Product | null>("/products/create", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return await this.httpClient.post<Product | null>(
+      "/products/create",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   }
 }

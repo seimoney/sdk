@@ -1,3 +1,4 @@
+import { WalletClient } from "viem";
 import type { HttpClient } from "../core/http-client";
 import type {
   Contract,
@@ -37,7 +38,11 @@ export class ContractsModule {
     const formData = new FormData();
 
     Object.entries(params).forEach(([key, value]) => {
-      formData.set(key, JSON.stringify(value));
+      if (value)
+        formData.set(
+          key,
+          typeof value === "object" ? JSON.stringify(value) : value?.toString()
+        );
     });
 
     if (file) {
@@ -54,8 +59,15 @@ export class ContractsModule {
   /**
    * Retry a contract transaction
    */
-  async fulfillContractTransaction(transaction: string): Promise<boolean> {
-    return await this.httpClient.get(`/contracts/retry/${transaction}`);
+  async fulfillContractTransaction(
+    transaction: string,
+    walletClient?: WalletClient
+  ): Promise<boolean> {
+    return await this.httpClient.get(
+      `/contracts/retry/${transaction}`,
+      undefined,
+      walletClient
+    );
   }
 
   /**

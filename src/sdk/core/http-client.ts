@@ -6,7 +6,6 @@ import type { WalletClient } from "viem";
 import type { SDKConfig, SDKError } from "../types";
 
 export class HttpClient {
-  private baseClient: AxiosInstance;
   private client: AxiosInstance;
   private config: SDKConfig;
   private token?: string;
@@ -15,14 +14,17 @@ export class HttpClient {
     this.config = config;
     this.token = config.token;
 
-    this.baseClient = axios.create({
+    this.client = axios.create({
       baseURL: this.config.apiUrl,
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    this.client = this.baseClient;
+    this.__init();
+  }
+
+  private __init() {
     this.setupInterceptors();
 
     if (this.token) {
@@ -37,7 +39,7 @@ export class HttpClient {
 
   private setupInterceptors(): void {
     // Request interceptor for error handling
-    this.baseClient.interceptors.request.use(
+    this.client.interceptors.request.use(
       (config) => {
         if (this.token) {
           config.headers.Authorization = `Bearer ${this.token}`;
@@ -48,7 +50,7 @@ export class HttpClient {
     );
 
     // Response interceptor for error handling
-    this.baseClient.interceptors.response.use(
+    this.client.interceptors.response.use(
       (response) => response,
       (error) => Promise.reject(this.createSDKError(error))
     );
@@ -78,68 +80,108 @@ export class HttpClient {
 
   setToken(token: string): void {
     this.token = token;
-    this.baseClient.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${token}`;
+    this.client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     this.client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     if (localStorage) {
       localStorage.setItem("token", token);
     }
   }
 
-  updateWalletClient(walletClient: WalletClient | null): void {
-    if (walletClient && walletClient.account) {
-      this.client = withPaymentInterceptor(
-        this.baseClient,
-        walletClient as any
-      );
-    } else {
-      this.client = this.baseClient;
-    }
-  }
-
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.get(url, config);
+  async get<T>(
+    url: string,
+    config?: AxiosRequestConfig,
+    walletClient?: WalletClient
+  ): Promise<T> {
+    const response: AxiosResponse<T> = walletClient
+      ? await withPaymentInterceptor(
+          axios.create({
+            baseURL: this.config.apiUrl,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          walletClient as any
+        ).get(url, config)
+      : await this.client.get(url, config);
     return response.data;
   }
 
   async post<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    walletClient?: WalletClient
   ): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.post(
-      url,
-      data,
-      config
-    );
+    const response: AxiosResponse<T> = walletClient
+      ? await withPaymentInterceptor(
+          axios.create({
+            baseURL: this.config.apiUrl,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          walletClient as any
+        ).post(url, data, config)
+      : await this.client.post(url, data, config);
     return response.data;
   }
 
   async put<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    walletClient?: WalletClient
   ): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.put(url, data, config);
+    const response: AxiosResponse<T> = walletClient
+      ? await withPaymentInterceptor(
+          axios.create({
+            baseURL: this.config.apiUrl,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          walletClient as any
+        ).put(url, data, config)
+      : await this.client.put(url, data, config);
     return response.data;
   }
 
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.delete(url, config);
+  async delete<T>(
+    url: string,
+    config?: AxiosRequestConfig,
+    walletClient?: WalletClient
+  ): Promise<T> {
+    const response: AxiosResponse<T> = walletClient
+      ? await withPaymentInterceptor(
+          axios.create({
+            baseURL: this.config.apiUrl,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          walletClient as any
+        ).delete(url, config)
+      : await this.client.delete(url, config);
     return response.data;
   }
 
   async patch<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    walletClient?: WalletClient
   ): Promise<T> {
-    const response: AxiosResponse<T> = await this.client.patch(
-      url,
-      data,
-      config
-    );
+    const response: AxiosResponse<T> = walletClient
+      ? await withPaymentInterceptor(
+          axios.create({
+            baseURL: this.config.apiUrl,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+          walletClient as any
+        ).patch(url, data, config)
+      : await this.client.patch(url, data, config);
     return response.data;
   }
 }

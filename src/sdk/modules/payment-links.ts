@@ -1,9 +1,10 @@
+import { WalletClient } from "viem";
 import type { HttpClient } from "../core/http-client";
-import type { 
-  Link, 
-  CreatePaymentLink, 
-  DeletePaymentLink, 
-  FulFillPaymentLink 
+import type {
+  Link,
+  CreatePaymentLink,
+  DeletePaymentLink,
+  FulFillPaymentLink,
 } from "../types";
 
 export class PaymentLinksModule {
@@ -40,7 +41,14 @@ export class PaymentLinksModule {
   /**
    * Fulfill a payment link transaction
    */
-  async fulfillPaymentLink(params: FulFillPaymentLink): Promise<string> {
-    return await this.httpClient.get<string>(`/payment-links/fulfill/${params.paymentId}`);
+  async fulfillPaymentLink(
+    params: FulFillPaymentLink,
+    walletClient?: WalletClient
+  ): Promise<string> {
+    return await this.httpClient.get<string>(
+      `/payment-links/fulfill/${params.paymentId}`,
+      undefined,
+      walletClient
+    );
   }
 }

@@ -7,11 +7,10 @@ import { ContractsModule } from "./modules/contracts";
 import { AnalyticsModule } from "./modules/analytics";
 import { ProductsModule } from "./modules/products";
 import type { SDKConfig } from "./types";
-import type { WalletClient } from "viem";
 
 export class SeiMoneySDK {
   private httpClient: HttpClient;
-  
+
   public readonly auth: AuthModule;
   public readonly accounts: AccountsModule;
   public readonly paymentLinks: PaymentLinksModule;
@@ -27,7 +26,7 @@ export class SeiMoneySDK {
     }
 
     this.httpClient = new HttpClient(config);
-    
+
     // Initialize all modules
     this.auth = new AuthModule(this.httpClient);
     this.accounts = new AccountsModule(this.httpClient);
@@ -36,13 +35,6 @@ export class SeiMoneySDK {
     this.contracts = new ContractsModule(this.httpClient);
     this.analytics = new AnalyticsModule(this.httpClient);
     this.products = new ProductsModule(this.httpClient);
-  }
-
-  /**
-   * Update the wallet client for payment processing
-   */
-  updateWalletClient(walletClient: WalletClient | null): void {
-    this.httpClient.updateWalletClient(walletClient);
   }
 
   /**
