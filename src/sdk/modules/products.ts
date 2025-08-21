@@ -1,5 +1,12 @@
+import { WalletClient } from "viem";
 import type { HttpClient } from "../core/http-client";
-import type { Product, CreateProduct, ImageFile, Checkout } from "../types";
+import type {
+  Product,
+  CreateCheckout,
+  CreateProduct,
+  ImageFile,
+  Checkout,
+} from "../types";
 
 export class ProductsModule {
   constructor(private httpClient: HttpClient) {}
@@ -7,15 +14,33 @@ export class ProductsModule {
   /**
    * Get checkout information
    */
-  async getCheckout(): Promise<Checkout | null> {
-    return await this.httpClient.get<Checkout | null>("/checkout");
+  async getCheckoutWithAuth(): Promise<Checkout | null> {
+    return await this.httpClient.get<Checkout | null>(`/checkout`);
+  }
+
+  async getCheckout(checkoutId: string): Promise<Checkout | null> {
+    return await this.httpClient.get<Checkout | null>(
+      `/checkout/${checkoutId}`
+    );
   }
 
   /**
-   * Get all products for the authenticated user
+   * Create new checkout
    */
-  async getProducts(): Promise<Product[]> {
-    return await this.httpClient.get<Product[]>("/checkout/products");
+  async createCheckout(params: CreateCheckout): Promise<Checkout | null> {
+    return await this.httpClient.post<Checkout | null>(
+      "/checkout/create",
+      params
+    );
+  }
+
+  /**
+   * Get all products for a checkout
+   */
+  async getProducts(checkoutId: string): Promise<Product[]> {
+    return await this.httpClient.get<Product[]>(
+      `/checkout/products/${checkoutId}`
+    );
   }
 
   /**
@@ -23,7 +48,7 @@ export class ProductsModule {
    */
   async getProduct(productId: string): Promise<Product> {
     return await this.httpClient.get<Product>(
-      `/checkout/products/${productId}`
+      `/checkout/products/product/${productId}`
     );
   }
 
@@ -52,13 +77,25 @@ export class ProductsModule {
     });
 
     return await this.httpClient.post<Product | null>(
-      "/products/create",
+      "/checkout/products/create",
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }
+    );
+  }
+
+  async fulfill(
+    productId: string,
+    quantity: number,
+    walletClient?: WalletClient
+  ) {
+    return await this.httpClient.get<string>(
+      `/checkout/fulfill/${productId}?quantity=${quantity}`,
+      undefined,
+      walletClient
     );
   }
 }

@@ -250,6 +250,27 @@ export type Checkout = {
   schedule: Schedule;
 };
 
+export type CreateCheckout = {
+  name: string;
+  tagline?: string;
+  about: string;
+  category?: string;
+  location: {
+    address: string;
+    description?: string;
+    state?: string;
+    country?: string;
+    long?: number;
+    lat?: number;
+  };
+  schedule?: {
+    open?: string;
+    close?: string;
+    days?: number[];
+    description?: string;
+  };
+};
+
 export type CreateProduct = {
   name: string;
   description: string;
