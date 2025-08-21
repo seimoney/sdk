@@ -248,6 +248,8 @@ export type Checkout = {
   logoURL: string;
   location: Location;
   schedule: Schedule;
+  totalRevenueUSD: number;
+  totalTestnetRevenueUSD: number;
 };
 
 export type CreateCheckout = {
@@ -255,19 +257,20 @@ export type CreateCheckout = {
   tagline?: string;
   about: string;
   category?: string;
+  logoURL?: string;
   location: {
     address: string;
-    description?: string;
-    state?: string;
+    city?: string;
+    zipCode?: string;
     country?: string;
-    long?: number;
-    lat?: number;
   };
-  schedule?: {
-    open?: string;
-    close?: string;
-    days?: number[];
-    description?: string;
+  schedule: {
+    timezone: string;
+    workingHours?: {
+      start?: string;
+      end?: string;
+    };
+    workingDays: number[];
   };
 };
 

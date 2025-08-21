@@ -27,10 +27,30 @@ export class ProductsModule {
   /**
    * Create new checkout
    */
-  async createCheckout(params: CreateCheckout): Promise<Checkout | null> {
+  async createCheckout(
+    params: CreateCheckout,
+    file: File
+  ): Promise<Checkout | null> {
+    const formData = new FormData();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value)
+        formData.set(
+          key,
+          typeof value === "object" ? JSON.stringify(value) : value?.toString()
+        );
+    });
+
+    formData.set("file", file);
+
     return await this.httpClient.post<Checkout | null>(
       "/checkout/create",
-      params
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   }
 
