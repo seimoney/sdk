@@ -19,7 +19,7 @@ export type Account = {
   owner: Hex;
   name?: string;
   avatarURL?: string;
-  emailAddress: string;
+  emailAddress?: string;
   createdAt: Date;
   updatedAt?: Date;
 };
@@ -28,7 +28,7 @@ export type CreateAccount = {
   owner: Hex;
   name?: string;
   avatarURL?: string;
-  emailAddress: string;
+  emailAddress?: string;
 };
 
 export type Link = {

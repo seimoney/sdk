@@ -1,7 +1,7 @@
 {
   "name": "@seimoney/sdk",
   "private": false,
-  "version": "1.5.3",
+  "version": "1.5.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@seimoney/sdk": "^1.5.5",
     "@seimoney/sei-x402": "^0.4.31",
     "@seimoney/sei-x402-axios": "^0.4.31",
     "axios": "^1.11.0",
